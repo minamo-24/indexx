@@ -14,12 +14,15 @@
     padding-top: 40px;
   }
 
+  .wrap {
+    text-align: center;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: 80px 120px 120px;
     gap: 12px;
     align-items: center;
-    text-align: center;
   }
 
   .header {
@@ -45,26 +48,38 @@
     background: #3b82f6;
     border-color: #93c5fd;
   }
+
+  .result {
+    margin-top: 28px;
+    font-size: 28px;
+    font-weight: bold;
+    min-height: 40px;
+  }
 </style>
 </head>
 <body>
 
-<div class="grid">
-  <div></div>
-  <div class="header">踏む</div>
-  <div class="header">踏まない</div>
+<div class="wrap">
+  <div class="grid">
+    <div></div>
+    <div class="header">踏む</div>
+    <div class="header">踏まない</div>
 
-  <div class="label">氷</div>
-  <div class="cell" data-row="ice"></div>
-  <div class="cell" data-row="ice"></div>
+    <div class="label">雷</div>
+    <div class="cell" data-row="thunder" data-value="踏む"></div>
+    <div class="cell" data-row="thunder" data-value="踏まない"></div>
 
-  <div class="label">雷</div>
-  <div class="cell" data-row="thunder"></div>
-  <div class="cell" data-row="thunder"></div>
+    <div class="label">氷</div>
+    <div class="cell" data-row="ice" data-value="踏む"></div>
+    <div class="cell" data-row="ice" data-value="踏まない"></div>
+  </div>
+
+  <div id="result" class="result"></div>
 </div>
 
 <script>
   const cells = document.querySelectorAll(".cell");
+  const result = document.getElementById("result");
 
   cells.forEach(cell => {
     cell.addEventListener("click", () => {
@@ -75,8 +90,29 @@
         .forEach(c => c.classList.remove("selected"));
 
       cell.classList.add("selected");
+      updateResult();
     });
   });
+
+  function updateResult() {
+    const thunder = document.querySelector('.cell[data-row="thunder"].selected')?.dataset.value;
+    const ice = document.querySelector('.cell[data-row="ice"].selected')?.dataset.value;
+
+    if (!thunder || !ice) {
+      result.textContent = "";
+      return;
+    }
+
+    if (thunder === "踏む" && ice === "踏む") {
+      result.textContent = "両方：踏む";
+    } else if (thunder === "踏まない" && ice === "踏まない") {
+      result.textContent = "両方：踏まない";
+    } else if (ice === "踏む" && thunder === "踏まない") {
+      result.textContent = "氷：踏む　雷：踏まない";
+    } else if (ice === "踏まない" && thunder === "踏む") {
+      result.textContent = "氷：踏まない　雷：踏む";
+    }
+  }
 </script>
 
 </body>
