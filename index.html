@@ -2,16 +2,32 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
 <title>絶妖星乱舞メモ</title>
+
 <style>
   body {
+    margin: 0;
     font-family: sans-serif;
     background: #111;
     color: white;
+
     display: flex;
     justify-content: center;
+
     padding-top: 40px;
+
+    /* iPhoneで長押し選択されにくくする */
+    user-select: none;
+    -webkit-user-select: none;
+
+    /* タップ時のハイライトを消す */
+    -webkit-tap-highlight-color: transparent;
   }
 
   .wrap {
@@ -20,8 +36,14 @@
 
   .grid {
     display: grid;
-    grid-template-columns: 80px 120px 120px;
+
+    grid-template-columns:
+      80px
+      120px
+      120px;
+
     gap: 12px;
+
     align-items: center;
   }
 
@@ -38,10 +60,15 @@
   .cell {
     width: 120px;
     height: 90px;
+
     background: #333;
+
     border: 3px solid #777;
     border-radius: 14px;
+
     cursor: pointer;
+
+    box-sizing: border-box;
   }
 
   .cell.selected {
@@ -51,73 +78,258 @@
 
   .result {
     margin-top: 28px;
-    font-size: 28px;
+
+    font-size: 32px;
     font-weight: bold;
-    min-height: 40px;
+
+    min-height: 50px;
   }
 </style>
 </head>
+
+
 <body>
 
 <div class="wrap">
+
   <div class="grid">
+
+    <!-- 上の見出し -->
+
     <div></div>
-    <div class="header">踏む</div>
-    <div class="header">踏まない</div>
 
-    <div class="label">雷</div>
-    <div class="cell" data-row="thunder" data-value="踏む"></div>
-    <div class="cell" data-row="thunder" data-value="踏まない"></div>
+    <div class="header">
+      踏む
+    </div>
 
-    <div class="label">氷</div>
-    <div class="cell" data-row="ice" data-value="踏む"></div>
-    <div class="cell" data-row="ice" data-value="踏まない"></div>
+    <div class="header">
+      踏まない
+    </div>
+
+
+    <!-- 雷 -->
+
+    <div class="label">
+      雷
+    </div>
+
+    <div
+      class="cell"
+      data-row="thunder"
+      data-value="踏む">
+    </div>
+
+    <div
+      class="cell"
+      data-row="thunder"
+      data-value="踏まない">
+    </div>
+
+
+    <!-- 氷 -->
+
+    <div class="label">
+      氷
+    </div>
+
+    <div
+      class="cell"
+      data-row="ice"
+      data-value="踏む">
+    </div>
+
+    <div
+      class="cell"
+      data-row="ice"
+      data-value="踏まない">
+    </div>
+
   </div>
 
-  <div id="result" class="result"></div>
+
+  <!-- 結果表示 -->
+
+  <div
+    id="result"
+    class="result">
+  </div>
+
 </div>
 
+
 <script>
-  const cells = document.querySelectorAll(".cell");
-  const result = document.getElementById("result");
+
+  const cells =
+    document.querySelectorAll(".cell");
+
+  const result =
+    document.getElementById("result");
+
 
   cells.forEach(cell => {
+
     cell.addEventListener("click", () => {
-      const row = cell.dataset.row;
+
+      const row =
+        cell.dataset.row;
+
+
+      /*
+
+      同じ行の選択を全部解除
+
+      例：
+
+      雷「踏む」を選択中
+
+          ↓
+
+      雷「踏まない」を押す
+
+          ↓
+
+      雷「踏む」は解除
+
+      */
 
       document
-        .querySelectorAll(`.cell[data-row="${row}"]`)
-        .forEach(c => c.classList.remove("selected"));
+        .querySelectorAll(
+          `.cell[data-row="${row}"]`
+        )
+        .forEach(c => {
+
+          c.classList.remove("selected");
+
+        });
+
+
+      /* 押したマスを選択 */
 
       cell.classList.add("selected");
+
+
+      /* 結果更新 */
+
       updateResult();
+
     });
+
   });
 
-function updateResult() {
-  const thunder = document.querySelector(
-    '.cell[data-row="thunder"].selected'
-  )?.dataset.value;
 
-  const ice = document.querySelector(
-    '.cell[data-row="ice"].selected'
-  )?.dataset.value;
 
-  if (!thunder || !ice) {
-    result.textContent = "";
-    return;
+  function updateResult() {
+
+    const thunder =
+      document.querySelector(
+        '.cell[data-row="thunder"].selected'
+      )?.dataset.value;
+
+
+    const ice =
+      document.querySelector(
+        '.cell[data-row="ice"].selected'
+      )?.dataset.value;
+
+
+
+    /*
+
+    雷・氷の両方が入力されるまで
+
+    結果は表示しない
+
+    */
+
+    if (!thunder || !ice) {
+
+      result.textContent = "";
+
+      return;
+
+    }
+
+
+
+    /*
+
+    雷：踏む
+    氷：踏む
+
+    */
+
+    if (
+      thunder === "踏む" &&
+      ice === "踏む"
+    ) {
+
+      result.textContent =
+        "両方：踏む";
+
+    }
+
+
+
+    /*
+
+    雷：踏まない
+    氷：踏まない
+
+    */
+
+    else if (
+      thunder === "踏まない" &&
+      ice === "踏まない"
+    ) {
+
+      result.textContent =
+        "両方：踏まない";
+
+    }
+
+
+
+    /*
+
+    氷だけ踏む
+
+    雷：踏まない
+    氷：踏む
+
+    */
+
+    else if (
+      ice === "踏む"
+    ) {
+
+      result.textContent =
+        "氷：踏む";
+
+    }
+
+
+
+    /*
+
+    雷だけ踏む
+
+    雷：踏む
+    氷：踏まない
+
+    */
+
+    else if (
+      thunder === "踏む"
+    ) {
+
+      result.textContent =
+        "雷：踏む";
+
+    }
+
   }
 
-  if (thunder === "踏む" && ice === "踏む") {
-    result.textContent = "両方：踏む";
+</script>
 
-  } else if (thunder === "踏まない" && ice === "踏まない") {
-    result.textContent = "両方：踏まない";
-
-  } else if (ice === "踏む") {
-    result.textContent = "氷：踏む";
-
-  } else if (thunder === "踏む") {
-    result.textContent = "雷：踏む";
-  }
-}
+</body>
+</html>
