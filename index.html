@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>絶妖星乱舞メモ</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #111;
+    color: white;
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 80px 120px 120px;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .header {
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .label {
+    font-size: 26px;
+    font-weight: bold;
+  }
+
+  .cell {
+    width: 120px;
+    height: 90px;
+    background: #333;
+    border: 3px solid #777;
+    border-radius: 14px;
+    cursor: pointer;
+  }
+
+  .cell.selected {
+    background: #3b82f6;
+    border-color: #93c5fd;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid">
+  <div></div>
+  <div class="header">踏む</div>
+  <div class="header">踏まない</div>
+
+  <div class="label">氷</div>
+  <div class="cell" data-row="ice"></div>
+  <div class="cell" data-row="ice"></div>
+
+  <div class="label">雷</div>
+  <div class="cell" data-row="thunder"></div>
+  <div class="cell" data-row="thunder"></div>
+</div>
+
+<script>
+  const cells = document.querySelectorAll(".cell");
+
+  cells.forEach(cell => {
+    cell.addEventListener("click", () => {
+      const row = cell.dataset.row;
+
+      document
+        .querySelectorAll(`.cell[data-row="${row}"]`)
+        .forEach(c => c.classList.remove("selected"));
+
+      cell.classList.add("selected");
+    });
+  });
+</script>
+
+</body>
+</html>
